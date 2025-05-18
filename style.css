@@ -740,4 +740,23 @@ html[data-theme='colorful'] .markdown-output code {
 /* ADDED: SVG arrow for colorful theme */
 html[data-theme='colorful'] .language-select select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%237D3C98' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.github-link {
+    font-size: 0.85rem;
+    color: var(--app-text-color-light);
+    text-align: center;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+
+.github-link a {
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none;
+}
+
+.github-link a:hover {
+    text-decoration: underline;
+    opacity: 1;
 } 
