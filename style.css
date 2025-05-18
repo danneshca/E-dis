@@ -1,0 +1,743 @@
+:root {
+    --primary-color: #28C1B9; /* Teal from image */
+    --primary-color-dark: #24aA9f;
+    --accent-yellow: #FFD95A; /* Yellow accent from image */
+
+    /* Light Theme (Default) */
+    --light-bg-light: #F0F4F8; /* Softer background */
+    --card-bg-light: #FFFFFF;
+    --sidebar-bg-light: #F8FAFC; /* Very light, almost white */
+    --text-color-light-theme: #3D5A70; /* Darker, softer text */
+    --text-color-light-theme-light: #5A788A;
+    --border-color-light: #D8E2EB;
+    --input-bg-light: #F8FAFC;
+    --placeholder-color-light: #9DB0BF;
+    --switch-bg-light: #CED9E0;
+    --vocab-button-bg-light: #F0F4F8;
+    --box-shadow-soft-light: 0 8px 25px rgba(0, 0, 0, 0.08);
+    --box-shadow-interactive-light: 0 4px 12px rgba(40, 193, 185, 0.2);
+
+    /* Dark Theme */
+    --light-bg-dark: #121212; /* Very dark grey, almost black */
+    --card-bg-dark: #1E1E1E; /* Dark grey for cards */
+    --sidebar-bg-dark: #171717; /* Slightly different dark for sidebar */
+    --text-color-dark-theme: #E0E0E0; /* Light grey for text */
+    --text-color-dark-theme-light: #B0B0B0; /* Slightly darker light grey */
+    --border-color-dark: #3A3A3A; /* Darker border */
+    --input-bg-dark: #2C2C2C;
+    --placeholder-color-dark: #707070;
+    --switch-bg-dark: #4A4A4A;
+    --vocab-button-bg-dark: #333333;
+    --box-shadow-soft-dark: 0 8px 25px rgba(0, 0, 0, 0.3);
+    --box-shadow-interactive-dark: 0 4px 12px rgba(40, 193, 185, 0.3);
+
+    /* Colorful Theme - Solid Colors */
+    --primary-colorful: #8E44AD;            /* Wisteria Purple - Main Accent */
+    --primary-colorful-light: #9B59B6;      /* Lighter Solid Purple for gradients */
+    --primary-colorful-dark: #7D3C98;       /* Darker Wisteria */
+    --accent-colorful: #E67E22;             /* Carrot Orange - Secondary Accent */
+    --text-color-colorful: #512E5F;         /* Dark Purple - Main Text */
+    --text-color-colorful-light: #7D3C98;   /* Medium Purple - Lighter Text */
+    --border-color-colorful: #D2B4DE;       /* Pale Lilac - Borders */
+    --input-bg-colorful: #FBEEE6;           /* Floral White - Input Background */
+    --placeholder-color-colorful: #A569BD;   /* Medium Purple - Placeholders */
+    --switch-bg-colorful: #EBDEF0;           /* Light Lilac - Switch Off State */
+    --vocab-button-bg-colorful: #E8DAEF;     /* Pale Purple - Vocab Buttons */
+    --box-shadow-soft-colorful: 0 8px 25px rgba(81, 46, 95, 0.15); 
+    --box-shadow-interactive-colorful: 0 4px 12px rgba(142, 68, 173, 0.25); 
+
+    /* Colorful Theme - Gradients */
+    --light-bg-colorful-gradient: linear-gradient(135deg, #FEF9E7 0%, #FFF0E0 100%);
+    --sidebar-bg-colorful-gradient: linear-gradient(180deg, #F6EEF9 0%, #E8DAEF 100%);
+    --card-bg-colorful-gradient: linear-gradient(to bottom, #FFFFFF 0%, #FAF7FB 100%);
+    --button-primary-colorful-gradient: linear-gradient(45deg, var(--primary-colorful-light) 0%, var(--primary-colorful) 100%);
+    --button-primary-colorful-gradient-hover: linear-gradient(45deg, var(--primary-colorful) 0%, var(--primary-colorful-dark) 100%);
+
+    /* Fallback to light theme variables first */
+    --app-light-bg: var(--light-bg-light);
+    --app-card-bg: var(--card-bg-light);
+    --app-sidebar-bg: var(--sidebar-bg-light);
+    --app-text-color: var(--text-color-light-theme);
+    --app-text-color-light: var(--text-color-light-theme-light);
+    --app-border-color: var(--border-color-light);
+    --app-input-bg: var(--input-bg-light);
+    --app-placeholder-color: var(--placeholder-color-light);
+    --app-switch-bg: var(--switch-bg-light);
+    --app-vocab-button-bg: var(--vocab-button-bg-light);
+    --app-box-shadow-soft: var(--box-shadow-soft-light);
+    --app-box-shadow-interactive: var(--box-shadow-interactive-light);
+    --app-primary-color: var(--primary-color); /* Add application level primary color */
+    --app-primary-color-dark: var(--primary-color-dark); /* Add application level primary color dark */
+    --app-primary-bg-action: var(--app-primary-color); /* New for action BGs */
+    --app-primary-bg-action-hover: var(--app-primary-color-dark); /* New for action BG hovers */
+
+    --border-radius-main: 20px; /* Consistent border radius */
+    --border-radius-interactive: 12px; /* For buttons, inputs */
+}
+
+html[data-theme='dark'] {
+    --app-light-bg: var(--light-bg-dark);
+    --app-card-bg: var(--card-bg-dark);
+    --app-sidebar-bg: var(--sidebar-bg-dark);
+    --app-text-color: var(--text-color-dark-theme);
+    --app-text-color-light: var(--text-color-dark-theme-light);
+    --app-border-color: var(--border-color-dark);
+    --app-input-bg: var(--input-bg-dark);
+    --app-placeholder-color: var(--placeholder-color-dark);
+    --app-switch-bg: var(--switch-bg-dark);
+    --app-vocab-button-bg: var(--vocab-button-bg-dark);
+    --app-box-shadow-soft: var(--box-shadow-soft-dark);
+    --app-box-shadow-interactive: var(--box-shadow-interactive-dark);
+    /* --app-primary-color and --app-primary-color-dark already inherited correctly for dark if needed */
+    /* --app-primary-bg-action and hover will default to dark theme solid colors */
+}
+
+html[data-theme='colorful'] {
+    --app-light-bg: var(--light-bg-colorful-gradient);     /* Gradient */
+    --app-card-bg: var(--card-bg-colorful-gradient);      /* Gradient */
+    --app-sidebar-bg: var(--sidebar-bg-colorful-gradient); /* Gradient */
+    --app-text-color: var(--text-color-colorful);
+    --app-text-color-light: var(--text-color-colorful-light);
+    --app-border-color: var(--border-color-colorful);
+    --app-input-bg: var(--input-bg-colorful); 
+    --app-placeholder-color: var(--placeholder-color-colorful);
+    --app-switch-bg: var(--switch-bg-colorful);
+    --app-vocab-button-bg: var(--vocab-button-bg-colorful);
+    --app-box-shadow-soft: var(--box-shadow-soft-colorful);
+    --app-box-shadow-interactive: var(--box-shadow-interactive-colorful);
+    --app-primary-color: var(--primary-colorful); /* Solid color for text/borders */
+    --app-primary-color-dark: var(--primary-colorful-dark); /* Solid color for text/borders */
+    --app-primary-bg-action: var(--button-primary-colorful-gradient); /* Gradient for BGs */
+    --app-primary-bg-action-hover: var(--button-primary-colorful-gradient-hover); /* Gradient for BG hovers */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background: var(--app-light-bg); /* MODIFIED: background from background-color */
+    color: var(--app-text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease; /* MODIFIED: background */
+}
+
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    height: 85vh; /* Increased height slightly */
+    max-height: 750px;
+    background: var(--app-card-bg); /* MODIFIED: background from background-color */
+    border-radius: var(--border-radius-main);
+    box-shadow: var(--app-box-shadow-soft);
+    overflow: hidden;
+    transition: background 0.3s ease, box-shadow 0.3s ease; /* MODIFIED: background */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px; /* Slightly wider sidebar */
+    background: var(--app-sidebar-bg); /* MODIFIED: background from background-color */
+    padding: 35px 25px;
+    border-right: 1px solid var(--app-border-color);
+    transition: background 0.3s ease, border-color 0.3s ease; /* MODIFIED: background */
+    display: flex; /* For theme toggle at bottom */
+    flex-direction: column; /* For theme toggle at bottom */
+    justify-content: space-between; /* For theme toggle at bottom */
+}
+
+/* .sidebar nav { */
+    /* flex-grow: 1; */ /* Allow nav to take up space before toggle */
+/* } */
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--app-text-color-light);
+    font-weight: 500;
+    border-radius: var(--border-radius-interactive);
+    margin-bottom: 12px;
+    transition: background 0.2s ease-in-out, color 0.2s ease-in-out; /* MODIFIED: background */
+}
+
+.sidebar nav ul li a:hover {
+    background: var(--app-primary-bg-action-hover); /* MODIFIED to use new var */
+    color: #ffffff; 
+}
+.sidebar nav ul li.active a {
+    background: var(--app-primary-bg-action); /* MODIFIED to use new var */
+    color: #ffffff;
+    box-shadow: 0 2px 8px var(--app-box-shadow-interactive); 
+}
+
+.sidebar nav ul li a:focus {
+    outline: none; 
+    box-shadow: 0 0 0 2px var(--app-sidebar-bg), 0 0 0 4px var(--app-primary-color); 
+}
+.sidebar nav ul li.active a:focus { 
+     box-shadow: 0 0 0 2px var(--app-primary-bg-action), 0 0 0 4px var(--app-primary-color-dark); /* MODIFIED: first color to bg action */
+}
+
+/* Theme Toggle Button - Initial Styles */
+.theme-toggle-button {
+    padding: 12px 18px; /* Increased padding */
+    background-color: var(--app-vocab-button-bg); /* Use a theme-aware bg */
+    color: var(--app-text-color);
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    cursor: pointer;
+    font-size: 0.95rem; /* Slightly increased font size */
+    font-weight: 500; /* Added font weight for better appearance */
+    text-align: center;
+    margin-top: 20px; /* Space above the button */
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* MODIFIED: background */
+    width: 100%; /* Make button take full available width in its container */
+    box-sizing: border-box; /* Ensure padding doesn't make it overflow */
+}
+
+.theme-toggle-button:hover {
+    background: var(--app-primary-bg-action); /* MODIFIED to use new var */
+    color: #ffffff;
+    border-color: transparent; /* MODIFIED: or var(--app-primary-color-dark) if a border is desired */
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 40px; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: var(--app-card-bg); /* MODIFIED: background from background-color, same as container for consistency */
+    transition: background 0.3s ease; /* MODIFIED: background */
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Increased gap */
+}
+
+.dialog-box textarea {
+    width: 100%;
+    height: 180px; /* Increased height */
+    padding: 20px; /* Increased padding */
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    font-size: 1rem;
+    box-sizing: border-box;
+    resize: vertical;
+    background-color: var(--app-input-bg); /* Input bg generally kept solid for readability */
+    color: var(--app-text-color);
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s ease, color 0.3s ease;
+}
+
+.dialog-box textarea::placeholder {
+    color: var(--app-placeholder-color);
+}
+
+.dialog-box textarea:focus {
+    outline: none;
+    border-color: var(--app-primary-color); /* Kept solid for focus rings */
+    box-shadow: 0 0 0 2px var(--app-card-bg), 0 0 0 4px var(--app-primary-color); /* Kept solid */
+    background: var(--app-card-bg); /* MODIFIED: from background-color to allow gradient */
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.language-select select {
+    padding: 12px 18px;
+    border-radius: var(--border-radius-interactive);
+    border: 1px solid var(--app-border-color);
+    font-size: 0.95rem;
+    background-color: var(--app-card-bg);
+    color: var(--app-text-color);
+    cursor: pointer;
+    appearance: none; /* For custom arrow if desired later */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%233D5A70' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 1em;
+    padding-right: 40px; /* Space for arrow */
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s ease, color 0.3s ease;
+}
+
+html[data-theme='dark'] .language-select select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23E0E0E0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme='colorful'] .language-select select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%237D3C98' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.save-to-vocab {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: var(--app-text-color-light);
+}
+
+/* Toggle Switch styling - refined */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;  /* Slightly wider */
+    height: 30px; /* Slightly taller */
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--app-switch-bg); /* Softer off state */
+    transition: .3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px; /* Larger knob */
+    width: 22px;  /* Larger knob */
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--card-bg-light); /* Light theme knob */
+    transition: .3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+html[data-theme='dark'] .slider:before {
+    background-color: var(--text-color-dark-theme-light); /* Dark theme knob */
+}
+
+input:checked + .slider {
+    background: var(--app-primary-bg-action); /* MODIFIED to use new var */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--app-primary-color); /* Kept solid for focus rings */
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.slider.round {
+    border-radius: 30px; /* Fully rounded */
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.submit-button {
+    padding: 14px 35px; 
+    background: var(--app-primary-bg-action); /* MODIFIED to use new var */
+    color: white;
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    font-size: 1rem;
+    font-weight: 600; /* Bolder */
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* MODIFIED: background */
+    box-shadow: var(--app-box-shadow-interactive);
+}
+
+.submit-button:hover {
+    background: var(--app-primary-bg-action-hover); /* MODIFIED to use new var */
+    box-shadow: 0 6px 16px var(--app-box-shadow-interactive); /* Might need adjustment if base color changes drastically */
+}
+
+.submit-button:active {
+    transform: translateY(1px);
+    /* box-shadow: 0 2px 8px rgba(40, 193, 185, 0.2); OLD */
+    /* Use a less intense version of the interactive shadow */
+    box-shadow: 0 2px 8px var(--app-box-shadow-interactive);
+}
+
+/* Output Sidebar */
+.output-sidebar {
+    width: 380px; /* Wider output */
+    background: var(--app-sidebar-bg); /* MODIFIED: background from background-color, same as sidebar */
+    padding: 40px; /* Increased padding */
+    border-left: 1px solid var(--app-border-color);
+    overflow-y: auto;
+    display: flex; /* Added for centering placeholder perhaps */
+    flex-direction: column; /* Added for centering placeholder perhaps */
+    transition: background 0.3s ease, border-color 0.3s ease; /* MODIFIED: background */
+}
+
+.markdown-output {
+    background: var(--app-card-bg); /* MODIFIED: background from background-color, same as container for consistency */
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    padding: 20px;
+    height: 100%; 
+    box-sizing: border-box;
+    overflow-y: auto; /* Ensure scrollability within this box */
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* MODIFIED: background */
+}
+
+.markdown-output pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    height: 100%;
+    overflow-y: auto; /* Ensures pre itself can scroll if content overflows */
+    font-size: 0.9rem;
+    color: var(--app-text-color);
+    transition: color 0.3s ease;
+}
+
+.markdown-output code { /* This style might be overridden by pre, or apply to inline code */
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    background-color: #E9F2F9; /* Light background for code blocks/inline */
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: var(--primary-color-dark);
+}
+
+html[data-theme='dark'] .markdown-output code {
+    background-color: #2c2c2c; 
+    color: var(--app-primary-color); 
+}
+
+html[data-theme='colorful'] .markdown-output code {
+    background-color: var(--input-bg-colorful); 
+    color: var(--primary-colorful-dark); 
+}
+
+.markdown-output pre code { /* Specific for code inside pre */
+    background-color: transparent; /* No extra background for the whole block */
+    padding: 0;
+    border-radius: 0;
+    color: inherit; /* Inherit from pre's color */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) { /* Adjusted breakpoint */
+    .container {
+        flex-direction: column;
+        height: auto;
+        max-height: none;
+        width: 95%;
+        background: var(--app-light-bg); /* Ensure main app background applies here too */
+    }
+    .sidebar, .output-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--app-border-color);
+        padding: 20px;
+    }
+    .output-sidebar {
+        border-left: none;
+        border-top: 1px solid var(--app-border-color);
+        min-height: 250px; /* Ensure it has some height */
+        border-bottom: none; /* No double border at the very bottom */
+    }
+    .main-content {
+        padding: 25px;
+    }
+    .vocab-list-section h2 {
+        margin-top: 0; /* Remove extra top margin on smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        padding: 15px;
+    }
+    .sidebar nav ul li a {
+        padding: 12px 15px;
+    }
+    .main-content {
+        padding: 20px;
+    }
+    .dialog-box textarea {
+        height: 150px;
+        padding: 15px;
+    }
+    .controls {
+        gap: 15px;
+    }
+    .language-select select {
+        padding: 10px 15px;
+        padding-right: 35px;
+    }
+    .submit-button {
+        padding: 12px 30px;
+        width: 100%; /* Full width button on mobile */
+    }
+    .output-sidebar {
+        padding: 20px;
+        min-height: 200px;
+    }
+    .markdown-output {
+        padding: 15px;
+    }
+    .vocab-item {
+        flex-direction: column; /* Stack word and buttons on very small screens */
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .vocab-item-buttons {
+        margin-left: 0; /* Remove left margin when stacked */
+    }
+}
+
+/* Vocabulary List Styles */
+.vocab-list-section h2 {
+    color: var(--app-text-color);
+    margin-bottom: 25px;
+    font-size: 1.8rem; 
+    font-weight: 600;
+    border-bottom: 2px solid var(--app-primary-color); /* Kept solid */
+    padding-bottom: 10px;
+    display: inline-block; 
+}
+
+#vocab-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1px; /* Creates thin lines between items if bg is set on items */
+    background-color: var(--app-border-color); /* This will be the line color */
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    overflow: hidden; /* To clip children to border-radius */
+}
+
+.vocab-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    background-color: var(--app-card-bg);
+    transition: background-color 0.2s ease;
+}
+
+.vocab-item:hover {
+    background-color: var(--app-input-bg); /* Use input bg for hover, or a new var */
+}
+
+/* If using gap: 1px on container, no need for border-bottom here */
+/* .vocab-item:not(:last-child) {
+    border-bottom: 1px solid var(--app-border-color);
+} */
+
+.vocab-item-word {
+    font-size: 1.1rem; /* Slightly larger word text */
+    color: var(--app-text-color);
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.vocab-item-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 15px; /* Space between word and buttons */
+}
+
+.vocab-button {
+    background-color: var(--app-vocab-button-bg); 
+    color: var(--app-text-color-light);
+    border: none;
+    border-radius: 50%; /* Circular buttons */
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem; /* Adjust if using text, for icons this might differ */
+    font-weight: bold; /* For Aa */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1; /* Ensure text/emoji is centered */
+}
+
+.vocab-button:hover {
+    background: var(--app-primary-bg-action-hover); /* MODIFIED to use new var - if these buttons are considered primary actions */
+    /* Or keep their specific hover colors if not considered primary like submit button */
+    /* For colorful theme, this uses primary-colorful to primary-colorful-dark gradient */
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* .meaning-button:hover { */
+    /* Specific hover for meaning if needed, e.g., different color */
+/* } */
+
+.delete-button {
+    font-size: 1.3rem; /* Make trash icon a bit larger if it's an emoji */
+}
+.delete-button:hover {
+    background: #E53935; /* Kept solid red for delete hover - universal */
+    color: white;
+}
+
+/* Message Styles (Loading, Empty, Error) */
+.loading-message,
+.empty-message,
+.error-message,
+.debug-link-message {
+    padding: 20px;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--app-text-color-light);
+}
+
+.error-message {
+    color: #D32F2F; /* Red for error messages */
+}
+
+.debug-link-message a {
+    color: var(--app-primary-color); /* Kept solid for text */
+    text-decoration: none;
+}
+
+.debug-link-message a:hover {
+    text-decoration: underline;
+}
+
+/* Version Display Styles */
+.version-display {
+    font-size: 0.85rem; /* Slightly increased font size */
+    color: var(--app-text-color-light); /* Use a lighter text color from the theme */
+    text-align: center; /* Center align the text */
+    padding: 5px 0; /* Some padding around it */
+    margin-bottom: 10px; /* Space below it, before the theme toggle button */
+    opacity: 0.7; /* Slightly faded out */
+}
+
+/* App Title Styles */
+.app-title {
+    font-size: 1.4rem; 
+    font-weight: 600; 
+    color: var(--app-primary-color); /* Kept solid for text */
+    text-align: center; 
+    padding: 10px 0; 
+    margin-bottom: 25px; /* Space below the title, before navigation */
+    /* border-bottom: 1px solid var(--app-border-color); */ /* Optional: a subtle separator line */
+}
+
+/* Quiz Interface Styles */
+.quiz-interface-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between elements */
+    height: 100%; /* Try to fill the markdown-display area */
+    box-sizing: border-box;
+}
+
+.quiz-instruction {
+    font-size: 1rem;
+    color: var(--app-text-color);
+    margin-bottom: 5px; /* Smaller margin as gap is used in container */
+}
+
+.quiz-sentence-textarea {
+    width: 100%;
+    min-height: 120px; /* Decent minimum height */
+    padding: 12px 15px;
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    resize: vertical;
+    background-color: var(--app-input-bg);
+    color: var(--app-text-color);
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s ease, color 0.3s ease;
+    flex-grow: 1; /* Allow textarea to take up available space */
+}
+
+.quiz-sentence-textarea::placeholder {
+    color: var(--app-placeholder-color);
+}
+
+.quiz-sentence-textarea:focus {
+    outline: none;
+    border-color: var(--app-primary-color); /* Kept solid */
+    box-shadow: 0 0 0 2px var(--app-card-bg), 0 0 0 4px var(--app-primary-color); /* Kept solid */
+    background: var(--app-card-bg); /* MODIFIED: from background-color to allow gradient */
+}
+
+.quiz-submit-button {
+    /* Uses .submit-button styles already, which now use background: var(--app-primary-bg-action) */
+    margin-top: auto; /* Push to the bottom if container has extra space */
+    width: 100%; /* Make it full width */
+}
+
+/* Quiz Result Controls Styles */
+.quiz-result-controls {
+    display: flex;
+    justify-content: center; /* Center buttons */
+    gap: 15px;
+    padding-top: 15px;
+    margin-top: 20px;
+    border-top: 1px solid var(--app-border-color);
+}
+
+.quiz-result-controls .vocab-button.keep-vocab-button,
+.quiz-result-controls .vocab-button.remove-after-quiz-button {
+    width: auto; /* Override .vocab-button fixed width */
+    height: auto; /* Override .vocab-button fixed height */
+    border-radius: var(--border-radius-interactive); /* Override .vocab-button circular */
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: normal; /* Override .vocab-button line-height for icons */
+    padding: 10px 20px;
+    display: inline-block; /* Override flex from .vocab-button */
+
+    /* Base background and color, border */
+    background-color: var(--app-vocab-button-bg);
+    color: var(--app-text-color);
+    border: 1px solid var(--app-border-color);
+}
+
+/* Hover for keep button */
+.quiz-result-controls .vocab-button.keep-vocab-button:hover {
+    background-color: var(--app-input-bg); /* Kept distinct from primary action gradient */
+    border-color: var(--app-text-color-light);
+    color: var(--app-text-color);
+}
+
+/* Ensure the font-size from .delete-button (1.3rem for icon) is overridden for this text button */
+.quiz-result-controls .vocab-button.remove-after-quiz-button.delete-button {
+    font-size: 0.9rem;
+}
+/* The .delete-button:hover style (red background) will still apply due to its specificity or if it's the last rule applied for hover */
+
+.quiz-instruction {
+    font-size: 1rem;
+    color: var(--app-text-color);
+    margin-bottom: 5px; /* Smaller margin as gap is used in container */
+}
+
+/* ADDED: SVG arrow for colorful theme */
+html[data-theme='colorful'] .language-select select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%237D3C98' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+} 

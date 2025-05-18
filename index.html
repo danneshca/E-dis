@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📒 E-dis 词根拆分词典</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="app-title">📒 E-dis <br>词根拆分词典</div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#">翻译</a></li>
+                    <li><a href="#">生词本</a></li>
+                </ul>
+            </nav>
+            <div>
+                <div class="version-display">v0.0.3</div>
+                <button class="theme-toggle-button" id="theme-toggle">切换主题</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <section class="input-section">
+                <div class="dialog-box">
+                    <textarea placeholder="请输入想要翻译和拆解词根的词语..."></textarea>
+                </div>
+                <div class="controls">
+                    <div class="language-select">
+                        <select>
+                            <option value="zh">中文</option>
+                            <option value="en">英文</option>
+                        </select>
+                    </div>
+                    <div class="save-to-vocab">
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>保存到单词本</span>
+                    </div>
+                    <button class="submit-button">提交</button>
+                </div>
+            </section>
+
+            <section class="vocab-list-section" style="display: none;">
+                <h2>我的生词</h2>
+                <div id="vocab-items-container">
+                    <!-- 生词将动态填充在这里 -->
+                </div>
+            </section>
+        </main>
+        <aside class="output-sidebar">
+            <div class="markdown-output" id="markdown-display">
+                <!-- Content will be injected here -->
+            </div>
+        </aside>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
