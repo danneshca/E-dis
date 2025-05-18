@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const getMeaningWorkflowId = '7505438624844398626';
     const deleteVocabWorkflowId = '7505437212633268261';
 
+    // New Coze Workflow ID for playing audio
+    const playAudioWorkflowId = '7505732361524248628';
+
     // Theme-related variables and functions
     const themes = ['light', 'dark', 'colorful'];
     const themeButtonLabels = {
@@ -138,24 +141,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const meaningButton = document.createElement('button');
                             meaningButton.classList.add('vocab-button', 'meaning-button');
-                            meaningButton.textContent = 'Aa';
+                            meaningButton.innerHTML = '📖';
                             meaningButton.title = '查看释义';
                             meaningButton.addEventListener('click', () => showMeaning(word));
 
                             const quizButton = document.createElement('button'); // New Quiz Button
                             quizButton.classList.add('vocab-button', 'quiz-button');
-                            quizButton.textContent = '✍️'; // Pencil emoji for quiz
+                            quizButton.innerHTML = '✍️'; // Pencil emoji for quiz - Use innerHTML for emoji
                             quizButton.title = '小测验';
                             quizButton.addEventListener('click', () => showQuizInterface(word));
 
+                            const playAudioButton = document.createElement('button'); // New Play Audio Button
+                            playAudioButton.classList.add('vocab-button', 'play-audio-button');
+                            playAudioButton.innerHTML = '🔊'; // Speaker icon
+                            playAudioButton.title = `播放 "${word}" 发音`;
+                            playAudioButton.addEventListener('click', (e) => {
+                                e.stopPropagation(); // Prevent card click if any
+                                playWordAudio(word, playAudioButton);
+                            });
+
                             const deleteButton = document.createElement('button');
                             deleteButton.classList.add('vocab-button', 'delete-button');
-                            deleteButton.textContent = '🗑️';
+                            deleteButton.innerHTML = '🗑️'; // Use innerHTML for emoji
                             deleteButton.title = '删除单词';
                             deleteButton.addEventListener('click', () => deleteWord(word, vocabItemDiv));
 
                             buttonsDiv.appendChild(meaningButton);
                             buttonsDiv.appendChild(quizButton); // Add quiz button
+                            buttonsDiv.appendChild(playAudioButton); // Add play audio button
                             buttonsDiv.appendChild(deleteButton);
 
                             vocabItemDiv.appendChild(wordSpan);
@@ -396,6 +409,113 @@ document.addEventListener('DOMContentLoaded', () => {
         // }
     }
 
+    async function playWordAudio(word, buttonElement) {
+        const globalAudioPlayerId = 'global-audio-player-instance';
+        let originalButtonContent = '';
+
+        if (buttonElement) {
+            buttonElement.disabled = true;
+            originalButtonContent = buttonElement.innerHTML; // Store original HTML content
+            buttonElement.innerHTML = '⏳'; // Loading emoji
+        }
+
+        // Stop and remove any existing audio player
+        let existingAudioPlayer = document.getElementById(globalAudioPlayerId);
+        if (existingAudioPlayer) {
+            existingAudioPlayer.pause();
+            existingAudioPlayer.src = ''; // Detach source
+            existingAudioPlayer.load(); // Abort current network request
+            existingAudioPlayer.remove();
+        }
+
+        try {
+            const response = await fetch(cozeApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${cozeApiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                },
+                body: JSON.stringify({
+                    workflow_id: playAudioWorkflowId,
+                    parameters: { input: word }
+                })
+            });
+            const result = await response.json();
+
+            if (result.code === 0 && result.data) {
+                const workflowOutput = JSON.parse(result.data);
+                const audioUrl = workflowOutput.output;
+
+                if (audioUrl) {
+                    const audioPlayer = document.createElement('audio');
+                    audioPlayer.id = globalAudioPlayerId;
+                    audioPlayer.src = audioUrl;
+                    // audioPlayer.style.display = 'none'; // Not strictly necessary to hide
+
+                    audioPlayer.play()
+                        .then(() => {
+                            if (buttonElement) {
+                                buttonElement.innerHTML = '🎶'; // Playing emoji
+                            }
+                        })
+                        .catch(e => {
+                            console.error(`Error playing audio for "${word}":`, e);
+                            if (buttonElement) {
+                                buttonElement.innerHTML = originalButtonContent;
+                                buttonElement.disabled = false;
+                            }
+                            alert(`播放 "${word}" 的音频失败: ${e.message}`);
+                            audioPlayer.remove(); // Clean up failed player
+                        });
+
+                    audioPlayer.onended = () => {
+                        if (buttonElement) {
+                            buttonElement.innerHTML = originalButtonContent;
+                            buttonElement.disabled = false;
+                        }
+                        audioPlayer.remove(); // Clean up after playing
+                    };
+
+                    audioPlayer.onerror = (e) => {
+                        console.error(`Error loading audio for "${word}":`, e);
+                        if (buttonElement) {
+                            buttonElement.innerHTML = originalButtonContent; // Restore original content
+                            buttonElement.disabled = false;
+                        }
+                        alert(`加载 "${word}" 的音频时出错。请检查链接或网络。`);
+                        audioPlayer.remove(); // Clean up errored player
+                    };
+                    // Append to body to ensure it's part of the document, some browsers might need this for events.
+                    // document.body.appendChild(audioPlayer); 
+                    // It seems appending is not always necessary if play() is called directly.
+                    // If issues arise on specific browsers, this could be a point to revisit.
+
+                } else {
+                    alert(`未能获取 "${word}" 的音频链接 (无输出)。`);
+                    if (buttonElement) {
+                        buttonElement.innerHTML = originalButtonContent;
+                        buttonElement.disabled = false;
+                    }
+                }
+            } else {
+                alert(`请求 "${word}" 的音频失败: ${result.msg || '未知API错误'}`);
+                console.error('Error fetching audio URL from Coze:', result);
+                if (buttonElement) {
+                    buttonElement.innerHTML = originalButtonContent;
+                    buttonElement.disabled = false;
+                }
+            }
+        } catch (error) {
+            alert(`获取 "${word}" 音频时发生 JavaScript 错误: ${error.message}`);
+            console.error('JS Error in playWordAudio:', error);
+            if (buttonElement) {
+                buttonElement.innerHTML = originalButtonContent;
+                buttonElement.disabled = false;
+            }
+        }
+    }
+
     if (submitButton && textarea && saveToVocabCheckbox && languageSelect && markdownDisplay) {
         submitButton.addEventListener('click', async () => {
             const tranlate_src = textarea.value;
@@ -455,6 +575,103 @@ document.addEventListener('DOMContentLoaded', () => {
                         } else {
                             console.warn('Marked.js library not found. Displaying raw Markdown. Please add Marked.js to index.html (e.g., <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>).');
                             markdownDisplay.textContent = markdownText.trim();
+                        }
+
+                        // Add audio play button for the searched word if applicable
+                        const potentialWordToPlay = tranlate_src.trim();
+                        // Check if translating to Chinese and source is likely English
+                        const isTranslatingToChinese = tranlate_to === 'zh';
+                        const containsEnglishChars = /[a-zA-Z]/.test(potentialWordToPlay);
+
+                        if (isTranslatingToChinese && containsEnglishChars && (outputc || outpute) && potentialWordToPlay.length > 0) {
+                            const audioPlaybackContainer = document.createElement('div');
+                            audioPlaybackContainer.style.marginTop = '20px'; // Add some space above
+                            audioPlaybackContainer.style.marginBottom = '10px'; // And below
+                            audioPlaybackContainer.style.textAlign = 'center';
+
+                            const playMainWordButton = document.createElement('button');
+                            playMainWordButton.classList.add('vocab-button'); // Base style, but will be overridden
+                            playMainWordButton.innerHTML = `🔊 播放 "${potentialWordToPlay}"`;
+                            playMainWordButton.title = `播放 "${potentialWordToPlay}" 的发音`;
+                            
+                            // Override some vocab-button styles for this specific button
+                            playMainWordButton.style.width = 'auto';
+                            playMainWordButton.style.height = 'auto';
+                            playMainWordButton.style.padding = '10px 20px';
+                            playMainWordButton.style.borderRadius = 'var(--border-radius-interactive)'; // More rectangular
+                            playMainWordButton.style.fontSize = '0.95rem'; // Adjust font size
+                            playMainWordButton.style.lineHeight = 'normal'; // Default line height for text
+
+                            playMainWordButton.addEventListener('click', () => playWordAudio(potentialWordToPlay, playMainWordButton));
+                            
+                            audioPlaybackContainer.appendChild(playMainWordButton);
+                            markdownDisplay.appendChild(audioPlaybackContainer); // Append to markdownDisplay content
+                        }
+
+                        // Add audio play button for the translated English output if applicable (Chinese to English)
+                        const singleWordRegex = /^[a-zA-Z]+(?:[\'-]?[a-zA-Z]+)*$/;
+                        console.log("[DEBUG] Ch-En Translate: Target language (tranlate_to):", tranlate_to);
+                        console.log("[DEBUG] Ch-En Translate: Raw outpute from API:", outpute);
+                        
+                        let extractedWord = "";
+                        let regexTestResult = false;
+
+                        if (tranlate_to === 'en' && outpute && typeof outpute === 'string') {
+                            const translationMarker = "**翻译**";
+                            const markerIndex = outpute.indexOf(translationMarker);
+                            if (markerIndex !== -1) {
+                                const substringAfterMarker = outpute.substring(markerIndex + translationMarker.length);
+                                const brTagIndex = substringAfterMarker.indexOf("<br>");
+                                if (brTagIndex !== -1) {
+                                    extractedWord = substringAfterMarker.substring(0, brTagIndex).trim();
+                                } else {
+                                    // If no <br> tag after marker, maybe the rest is the word?
+                                    extractedWord = substringAfterMarker.trim(); 
+                                }
+                                console.log("[DEBUG] Ch-En Translate: Extracted potential word:", extractedWord);
+                            } else {
+                                console.log("[DEBUG] Ch-En Translate: '**翻译**' marker not found in outpute.");
+                                // Fallback or assume outpute itself might be the word if marker is missing
+                                // For now, if marker is not there, we won't try to parse, to be safe
+                                extractedWord = outpute.trim(); // Try to use the whole outpute as a fallback
+                            }
+
+                            if (extractedWord) {
+                                regexTestResult = singleWordRegex.test(extractedWord);
+                            }
+                            console.log("[DEBUG] Ch-En Translate: singleWordRegex.test(extractedWord):", regexTestResult, "(Word tested: '" + extractedWord + "')");
+                        } else {
+                            console.log("[DEBUG] Ch-En Translate: outpute is null, undefined, not a string, or not translating to English.");
+                        }
+
+                        if (regexTestResult) { // Now this condition is sufficient, as tranlate_to === 'en' is checked above
+                            const englishWordToPlay = extractedWord;
+                            console.log("[DEBUG] Ch-En Translate: Conditions MET. Adding play button for:", englishWordToPlay);
+                            const translatedAudioPlaybackContainer = document.createElement('div');
+                            translatedAudioPlaybackContainer.style.marginTop = '20px';
+                            translatedAudioPlaybackContainer.style.marginBottom = '10px';
+                            translatedAudioPlaybackContainer.style.textAlign = 'center';
+
+                            const playTranslatedWordButton = document.createElement('button');
+                            playTranslatedWordButton.classList.add('vocab-button'); // Base style
+                            playTranslatedWordButton.innerHTML = `🔊 播放 "${englishWordToPlay}"`;
+                            playTranslatedWordButton.title = `播放 "${englishWordToPlay}" 的发音`;
+
+                            // Override some vocab-button styles for this specific button (same as above)
+                            playTranslatedWordButton.style.width = 'auto';
+                            playTranslatedWordButton.style.height = 'auto';
+                            playTranslatedWordButton.style.padding = '10px 20px';
+                            playTranslatedWordButton.style.borderRadius = 'var(--border-radius-interactive)';
+                            playTranslatedWordButton.style.fontSize = '0.95rem';
+                            playTranslatedWordButton.style.lineHeight = 'normal';
+
+                            playTranslatedWordButton.addEventListener('click', () => playWordAudio(englishWordToPlay, playTranslatedWordButton));
+
+                            translatedAudioPlaybackContainer.appendChild(playTranslatedWordButton);
+                            markdownDisplay.appendChild(translatedAudioPlaybackContainer);
+                        } else {
+                            console.log("[DEBUG] Ch-En Translate: Conditions NOT MET. Play button for translated English will NOT be added.");
+                            console.log("[DEBUG] Ch-En Translate: Details - isEnglishTargetRelevant:", tranlate_to === 'en', "; hasOutputeAndString:", (outpute && typeof outpute === 'string'), "; passesRegexTest:", regexTestResult, "; wordAttemptedForRegex:", extractedWord);
                         }
 
                         if (result.debug_url) {
