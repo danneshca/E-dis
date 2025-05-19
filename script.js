@@ -610,68 +610,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Add audio play button for the translated English output if applicable (Chinese to English)
                         const singleWordRegex = /^[a-zA-Z]+(?:[\'-]?[a-zA-Z]+)*$/;
-                        console.log("[DEBUG] Ch-En Translate: Target language (tranlate_to):", tranlate_to);
-                        console.log("[DEBUG] Ch-En Translate: Raw outpute from API:", outpute);
+                        console.log("[DEBUG] Ch-En Translate: ====== 开始处理中译英音频按钮 ======");
+                        console.log("[DEBUG] Ch-En Translate: 原始输出 (outpute):", outpute);
+                        console.log("[DEBUG] Ch-En Translate: outpute 类型:", typeof outpute);
                         
-                        let extractedWord = "";
-                        let regexTestResult = false;
-
-                        if (tranlate_to === 'en' && outpute && typeof outpute === 'string') {
+                        let extractedWords = [];
+                        if (outpute && typeof outpute === 'string') {
+                            console.log("[DEBUG] Ch-En Translate: 开始提取英文单词");
+                            // 尝试从outpute中提取英文单词
+                            // 首先尝试查找"翻译"标记
                             const translationMarker = "**翻译**";
                             const markerIndex = outpute.indexOf(translationMarker);
+                            console.log("[DEBUG] Ch-En Translate: 查找翻译标记结果:", markerIndex !== -1 ? "找到" : "未找到");
+                            
+                            let extractedText = '';
                             if (markerIndex !== -1) {
+                                // 如果找到"翻译"标记，提取后面的内容
                                 const substringAfterMarker = outpute.substring(markerIndex + translationMarker.length);
+                                console.log("[DEBUG] Ch-En Translate: 标记后的内容:", substringAfterMarker);
                                 const brTagIndex = substringAfterMarker.indexOf("<br>");
                                 if (brTagIndex !== -1) {
-                                    extractedWord = substringAfterMarker.substring(0, brTagIndex).trim();
+                                    extractedText = substringAfterMarker.substring(0, brTagIndex).trim();
                                 } else {
-                                    // If no <br> tag after marker, maybe the rest is the word?
-                                    extractedWord = substringAfterMarker.trim(); 
+                                    extractedText = substringAfterMarker.trim();
                                 }
-                                console.log("[DEBUG] Ch-En Translate: Extracted potential word:", extractedWord);
+                                // 分割所有单词
+                                extractedWords = extractedText.split(/[;,]/).map(word => word.trim()).filter(word => word);
+                                console.log("[DEBUG] Ch-En Translate: 提取的单词数组:", extractedWords);
                             } else {
-                                console.log("[DEBUG] Ch-En Translate: '**翻译**' marker not found in outpute.");
-                                // Fallback or assume outpute itself might be the word if marker is missing
-                                // For now, if marker is not there, we won't try to parse, to be safe
-                                extractedWord = outpute.trim(); // Try to use the whole outpute as a fallback
+                                // 如果没有找到"翻译"标记，尝试直接提取所有英文单词
+                                console.log("[DEBUG] Ch-En Translate: 尝试直接提取英文单词");
+                                const words = outpute.split(/\s+/);
+                                console.log("[DEBUG] Ch-En Translate: 分割后的单词数组:", words);
+                                extractedWords = words.filter(word => singleWordRegex.test(word));
+                                console.log("[DEBUG] Ch-En Translate: 找到符合的单词:", extractedWords);
                             }
+                            
+                            // 为每个有效的英文单词创建播放按钮
+                            if (extractedWords.length > 0) {
+                                const audioButtonsContainer = document.createElement('div');
+                                audioButtonsContainer.style.marginTop = '20px';
+                                audioButtonsContainer.style.marginBottom = '10px';
+                                audioButtonsContainer.style.textAlign = 'center';
+                                audioButtonsContainer.style.display = 'flex';
+                                audioButtonsContainer.style.flexWrap = 'wrap';
+                                audioButtonsContainer.style.gap = '10px';
+                                audioButtonsContainer.style.justifyContent = 'center';
 
-                            if (extractedWord) {
-                                regexTestResult = singleWordRegex.test(extractedWord);
+                                extractedWords.forEach(word => {
+                                    if (singleWordRegex.test(word)) {
+                                        const playButton = document.createElement('button');
+                                        playButton.classList.add('vocab-button');
+                                        playButton.innerHTML = `🔊 播放 "${word}"`;
+                                        playButton.title = `播放 "${word}" 的发音`;
+
+                                        playButton.style.width = 'auto';
+                                        playButton.style.height = 'auto';
+                                        playButton.style.padding = '10px 20px';
+                                        playButton.style.borderRadius = 'var(--border-radius-interactive)';
+                                        playButton.style.fontSize = '0.95rem';
+                                        playButton.style.lineHeight = 'normal';
+
+                                        playButton.addEventListener('click', () => playWordAudio(word, playButton));
+                                        audioButtonsContainer.appendChild(playButton);
+                                    }
+                                });
+
+                                if (audioButtonsContainer.children.length > 0) {
+                                    markdownDisplay.appendChild(audioButtonsContainer);
+                                    console.log("[DEBUG] Ch-En Translate: 播放按钮已添加");
+                                }
+                            } else {
+                                console.log("[DEBUG] Ch-En Translate: 未找到有效的英文单词");
                             }
-                            console.log("[DEBUG] Ch-En Translate: singleWordRegex.test(extractedWord):", regexTestResult, "(Word tested: '" + extractedWord + "')");
                         } else {
-                            console.log("[DEBUG] Ch-En Translate: outpute is null, undefined, not a string, or not translating to English.");
-                        }
-
-                        if (regexTestResult) { // Now this condition is sufficient, as tranlate_to === 'en' is checked above
-                            const englishWordToPlay = extractedWord;
-                            console.log("[DEBUG] Ch-En Translate: Conditions MET. Adding play button for:", englishWordToPlay);
-                            const translatedAudioPlaybackContainer = document.createElement('div');
-                            translatedAudioPlaybackContainer.style.marginTop = '20px';
-                            translatedAudioPlaybackContainer.style.marginBottom = '10px';
-                            translatedAudioPlaybackContainer.style.textAlign = 'center';
-
-                            const playTranslatedWordButton = document.createElement('button');
-                            playTranslatedWordButton.classList.add('vocab-button'); // Base style
-                            playTranslatedWordButton.innerHTML = `🔊 播放 "${englishWordToPlay}"`;
-                            playTranslatedWordButton.title = `播放 "${englishWordToPlay}" 的发音`;
-
-                            // Override some vocab-button styles for this specific button (same as above)
-                            playTranslatedWordButton.style.width = 'auto';
-                            playTranslatedWordButton.style.height = 'auto';
-                            playTranslatedWordButton.style.padding = '10px 20px';
-                            playTranslatedWordButton.style.borderRadius = 'var(--border-radius-interactive)';
-                            playTranslatedWordButton.style.fontSize = '0.95rem';
-                            playTranslatedWordButton.style.lineHeight = 'normal';
-
-                            playTranslatedWordButton.addEventListener('click', () => playWordAudio(englishWordToPlay, playTranslatedWordButton));
-
-                            translatedAudioPlaybackContainer.appendChild(playTranslatedWordButton);
-                            markdownDisplay.appendChild(translatedAudioPlaybackContainer);
-                        } else {
-                            console.log("[DEBUG] Ch-En Translate: Conditions NOT MET. Play button for translated English will NOT be added.");
-                            console.log("[DEBUG] Ch-En Translate: Details - isEnglishTargetRelevant:", tranlate_to === 'en', "; hasOutputeAndString:", (outpute && typeof outpute === 'string'), "; passesRegexTest:", regexTestResult, "; wordAttemptedForRegex:", extractedWord);
+                            console.log("[DEBUG] Ch-En Translate: 不满足处理条件 - outpute 存在:", !!outpute);
+                            console.log("[DEBUG] Ch-En Translate: outpute 类型为字符串:", typeof outpute === 'string');
                         }
 
                         if (result.debug_url) {
