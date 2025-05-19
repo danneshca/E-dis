@@ -745,8 +745,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // 首先检查用户是否登录
             if (!currentUser) {
                 showNotificationModal('请先登录后再使用翻译功能。', '需要登录');
-                // 可以选择性地调用 showAuthModal() 直接弹出登录框
-                // showAuthModal(); 
                 return; // 阻止后续操作
             }
 
