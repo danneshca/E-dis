@@ -32,11 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const playAudioWorkflowId = '7505732361524248628';
 
     // Theme-related variables and functions
-    const themes = ['light', 'dark', 'colorful'];
+    const themes = ['light', 'dark', 'colorful', 'pinkblue'];
     const themeButtonLabels = {
         light: '切换深色模式',
         dark: '切换彩色模式',
-        colorful: '切换浅色模式'
+        colorful: '切换粉蓝模式',
+        pinkblue: '切换浅色模式'
     };
 
     // Function to apply theme based on preference
@@ -103,10 +104,154 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Placeholder for loadAndDisplayVocabList - will be implemented next
-    async function loadAndDisplayVocabList() {
-        vocabItemsContainer.innerHTML = '<p class="loading-message">正在加载生词列表...</p>';
-        markdownDisplay.innerHTML = ''; // Clear right panel when loading vocab list
+    // 用户认证相关变量
+    const authModal = document.getElementById('auth-modal');
+    const authTitle = document.getElementById('auth-title');
+    const authForm = document.getElementById('auth-form');
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userInfo = document.getElementById('user-info');
+    const loginSection = document.getElementById('login-section');
+    const usernameDisplay = document.getElementById('username-display');
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const closeButton = document.querySelector('.close-button');
+
+    // Notification Modal Elements
+    const notificationModal = document.getElementById('notification-modal');
+    const notificationTitle = document.getElementById('notification-title');
+    const notificationMessage = document.getElementById('notification-message');
+    const notificationCloseButton = document.getElementById('notification-close-button');
+    const notificationOkButton = document.getElementById('notification-ok-button');
+
+    // 用户认证状态
+    let currentUser = null;
+    let isRegisterMode = false;
+
+    // 检查本地存储中的用户信息
+    function checkUserSession() {
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUIForLoggedInUser();
+        }
+    }
+
+    // 更新UI以显示已登录用户
+    function updateUIForLoggedInUser() {
+        if (currentUser) {
+            usernameDisplay.textContent = currentUser.username;
+            userInfo.style.display = 'block';
+            loginSection.style.display = 'none';
+        } else {
+            userInfo.style.display = 'none';
+            loginSection.style.display = 'block';
+        }
+    }
+
+    // 显示认证模态框
+    function showAuthModal() {
+        authModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 隐藏认证模态框
+    function hideAuthModal() {
+        authModal.style.display = 'none';
+        document.body.style.overflow = '';
+        authForm.reset();
+        isRegisterMode = false;
+        updateAuthUI();
+    }
+
+    // 更新认证UI
+    function updateAuthUI() {
+        authTitle.textContent = isRegisterMode ? '注册' : '登录';
+        confirmPasswordGroup.style.display = isRegisterMode ? 'block' : 'none';
+        authTabs.forEach(tab => {
+            if (tab.dataset.tab === (isRegisterMode ? 'register' : 'login')) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+    }
+
+    // 切换登录/注册模式
+    authTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            isRegisterMode = tab.dataset.tab === 'register';
+            updateAuthUI();
+        });
+    });
+
+    // 关闭按钮事件
+    closeButton.addEventListener('click', hideAuthModal);
+
+    // 点击模态框外部关闭
+    window.addEventListener('click', (e) => {
+        // 只处理通知模态框的外部点击关闭
+        if (notificationModal && e.target === notificationModal) {
+            hideNotificationModal();
+        }
+        // 不再处理 authModal (登录/注册弹窗) 的外部点击关闭
+        // if (e.target === authModal) {
+        //     hideAuthModal();
+        // }
+    });
+
+    // 登录按钮事件
+    loginButton.addEventListener('click', showAuthModal);
+
+    // 退出登录事件
+    logoutButton.addEventListener('click', () => {
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        updateUIForLoggedInUser();
+        showNotificationModal('您已成功退出登录。');
+    });
+
+    // 显示自定义通知模态框
+    function showNotificationModal(message, title = '提示') {
+        if (notificationModal && notificationTitle && notificationMessage) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            notificationModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        } else {
+            // Fallback to alert if modal elements are not found for some reason
+            alert(message);
+        }
+    }
+
+    // 隐藏自定义通知模态框
+    function hideNotificationModal() {
+        if (notificationModal) {
+            notificationModal.style.display = 'none';
+            document.body.style.overflow = ''; // Restore background scrolling
+        }
+    }
+
+    // 为通知模态框的关闭和确定按钮添加事件监听器
+    if (notificationCloseButton) {
+        notificationCloseButton.addEventListener('click', hideNotificationModal);
+    }
+    if (notificationOkButton) {
+        notificationOkButton.addEventListener('click', hideNotificationModal);
+    }
+
+    // 处理表单提交
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (isRegisterMode && password !== confirmPassword) {
+            showNotificationModal('两次输入的密码不一致');
+            return;
+        }
 
         try {
             const response = await fetch(cozeApiUrl, {
@@ -116,7 +261,81 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'Accept': '*/*'
                 },
-                body: JSON.stringify({ workflow_id: getAllVocabWorkflowId })
+                body: JSON.stringify({
+                    workflow_id: isRegisterMode ? '7506154953607970870' : '7506048204979421211', // 更新注册及登录工作流ID
+                    parameters: {
+                        username,
+                        password
+                    }
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.code === 0 && result.data) {
+                const workflowOutput = JSON.parse(result.data); 
+
+                if (isRegisterMode) {
+                    // 处理注册逻辑
+                    if (workflowOutput.output === true) {
+                        showNotificationModal('注册成功！现在您可以登录了。', '注册成功');
+                        authForm.reset(); // 清空表单
+                        isRegisterMode = false; // 切换回登录模式
+                        updateAuthUI(); // 更新UI以显示登录标签为激活
+                    } else {
+                        // output === false 或者 output 未定义等情况
+                        showNotificationModal('注册失败，用户名已被占用', '注册失败');
+                    }
+                } else {
+                    // 处理登录逻辑 (基本保持不变，依赖 workflowOutput.success 和 workflowOutput.uuid)
+                    if (workflowOutput.success) {
+                        currentUser = {
+                            username, 
+                            token: workflowOutput.uuid 
+                        };
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        updateUIForLoggedInUser();
+                        hideAuthModal();
+                        if (vocabListSection.style.display !== 'none') {
+                            loadAndDisplayVocabList();
+                        }
+                    } else {
+                        showNotificationModal(workflowOutput.message || '登录失败，请检查您的用户名和密码。', '登录失败');
+                    }
+                }
+            } else {
+                showNotificationModal('认证请求失败，请稍后重试。', '认证错误');
+            }
+        } catch (error) {
+            console.error('认证错误:', error);
+            showNotificationModal('发生错误，请稍后重试。', '操作异常');
+        }
+    });
+
+    // Placeholder for loadAndDisplayVocabList - will be implemented next
+    async function loadAndDisplayVocabList() {
+        if (!currentUser) {
+            showNotificationModal('请先登录才能查看生词本。', '提示');
+            return;
+        }
+
+        vocabItemsContainer.innerHTML = '<p class="loading-message">正在加载生词列表...</p>';
+        markdownDisplay.innerHTML = '';
+
+        try {
+            const response = await fetch(cozeApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${cozeApiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                },
+                body: JSON.stringify({
+                    workflow_id: getAllVocabWorkflowId,
+                    parameters: {
+                        input_id: currentUser.username
+                    }
+                })
             });
 
             const result = await response.json();
@@ -145,30 +364,30 @@ document.addEventListener('DOMContentLoaded', () => {
                             meaningButton.title = '查看释义';
                             meaningButton.addEventListener('click', () => showMeaning(word));
 
-                            const quizButton = document.createElement('button'); // New Quiz Button
+                            const quizButton = document.createElement('button');
                             quizButton.classList.add('vocab-button', 'quiz-button');
-                            quizButton.innerHTML = '✍️'; // Pencil emoji for quiz - Use innerHTML for emoji
+                            quizButton.innerHTML = '✍️';
                             quizButton.title = '小测验';
                             quizButton.addEventListener('click', () => showQuizInterface(word));
 
-                            const playAudioButton = document.createElement('button'); // New Play Audio Button
+                            const playAudioButton = document.createElement('button');
                             playAudioButton.classList.add('vocab-button', 'play-audio-button');
-                            playAudioButton.innerHTML = '🔊'; // Speaker icon
+                            playAudioButton.innerHTML = '🔊';
                             playAudioButton.title = `播放 "${word}" 发音`;
                             playAudioButton.addEventListener('click', (e) => {
-                                e.stopPropagation(); // Prevent card click if any
+                                e.stopPropagation();
                                 playWordAudio(word, playAudioButton);
                             });
 
                             const deleteButton = document.createElement('button');
                             deleteButton.classList.add('vocab-button', 'delete-button');
-                            deleteButton.innerHTML = '🗑️'; // Use innerHTML for emoji
+                            deleteButton.innerHTML = '🗑️';
                             deleteButton.title = '删除单词';
                             deleteButton.addEventListener('click', () => deleteWord(word, vocabItemDiv));
 
                             buttonsDiv.appendChild(meaningButton);
-                            buttonsDiv.appendChild(quizButton); // Add quiz button
-                            buttonsDiv.appendChild(playAudioButton); // Add play audio button
+                            buttonsDiv.appendChild(quizButton);
+                            buttonsDiv.appendChild(playAudioButton);
                             buttonsDiv.appendChild(deleteButton);
 
                             vocabItemDiv.appendChild(wordSpan);
@@ -182,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.error('Error fetching vocab list:', result);
                 vocabItemsContainer.innerHTML = '<p class="error-message">加载生词列表失败。请稍后重试。</p>';
-                 if (result.debug_url) {
+                if (result.debug_url) {
                     console.log(`Vocab list fetch debug URL: ${result.debug_url}`);
                     vocabItemsContainer.innerHTML += `<p class="debug-link-message">调试链接: <a href="${result.debug_url}" target="_blank">查看详情</a></p>`;
                 }
@@ -232,13 +451,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function deleteWord(word, listItemElement) {
-        if (!confirm(`确定要从生词本中删除 "${word}" 吗？`)) {
+        if (!currentUser) {
+            showNotificationModal('请先登录才能删除单词。', '提示');
             return;
         }
-        // Optimistically remove from UI or show a loading state on the item
-        // listItemElement.style.opacity = '0.5'; 
-        // listItemElement.querySelector('.delete-button').disabled = true;
 
+        // 使用自定义确认框替代 confirm
+        showConfirmationModal(`确定要从生词本中删除 "${word}" 吗？`, () => {
+            deleteWordConfirmed(word, listItemElement);
+        });
+    }
+
+    async function deleteWordConfirmed(word, listItemElement) {
         try {
             const response = await fetch(cozeApiUrl, {
                 method: 'POST',
@@ -247,9 +471,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'Accept': '*/*'
                 },
-                body: JSON.stringify({ 
-                    workflow_id: deleteVocabWorkflowId, 
-                    parameters: { word: word } 
+                body: JSON.stringify({
+                    workflow_id: deleteVocabWorkflowId,
+                    parameters: {
+                        word,
+                        input_id: currentUser.token
+                    }
                 })
             });
             const result = await response.json();
@@ -263,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     vocabItemsContainer.innerHTML = '<p class="empty-message">生词本是空的。</p>';
                 }
             } else {
-                alert(`删除 "${word}" 失败: ${result.msg || '未知错误'}`);
+                showNotificationModal(`删除 "${word}" 失败: ${result.msg || '未知错误'}`, '删除失败');
                 console.error('Error deleting word:', result);
                 // Re-enable button if optimistic UI was used
                 // listItemElement.style.opacity = '1';
@@ -271,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('JS Error deleting word:', error);
-            alert(`删除 "${word}" 时发生错误。`);
+            showNotificationModal(`删除 "${word}" 时发生错误。`, '操作异常');
             // Re-enable button if optimistic UI was used
             // listItemElement.style.opacity = '1';
             // listItemElement.querySelector('.delete-button').disabled = false;
@@ -315,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitQuizButton.addEventListener('click', async () => {
             const sentence = sentenceTextarea.value.trim();
             if (!sentence) {
-                alert('请输入您造的句子！');
+                showNotificationModal('请输入您造的句子！', '提示');
                 return;
             }
             submitQuizButton.disabled = true;
@@ -460,12 +687,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         })
                         .catch(e => {
-                            console.error(`Error playing audio for "${word}":`, e);
+                            console.error(`播放 "${word}" 的音频失败: ${e.message}`);
                             if (buttonElement) {
                                 buttonElement.innerHTML = originalButtonContent;
                                 buttonElement.disabled = false;
                             }
-                            alert(`播放 "${word}" 的音频失败: ${e.message}`);
                             audioPlayer.remove(); // Clean up failed player
                         });
 
@@ -478,12 +704,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     audioPlayer.onerror = (e) => {
-                        console.error(`Error loading audio for "${word}":`, e);
+                        console.error(`Error loading audio for "${word}":`, e, `URL: ${audioPlayer.src}`);
                         if (buttonElement) {
                             buttonElement.innerHTML = originalButtonContent; // Restore original content
                             buttonElement.disabled = false;
                         }
-                        alert(`加载 "${word}" 的音频时出错。请检查链接或网络。`);
                         audioPlayer.remove(); // Clean up errored player
                     };
                     // Append to body to ensure it's part of the document, some browsers might need this for events.
@@ -492,14 +717,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // If issues arise on specific browsers, this could be a point to revisit.
 
                 } else {
-                    alert(`未能获取 "${word}" 的音频链接 (无输出)。`);
+                    showNotificationModal(`未能获取 "${word}" 的音频链接 (无输出)。`, '音频获取失败');
                     if (buttonElement) {
                         buttonElement.innerHTML = originalButtonContent;
                         buttonElement.disabled = false;
                     }
                 }
             } else {
-                alert(`请求 "${word}" 的音频失败: ${result.msg || '未知API错误'}`);
+                showNotificationModal(`请求 "${word}" 的音频失败: ${result.msg || '未知API错误'}`, 'API错误');
                 console.error('Error fetching audio URL from Coze:', result);
                 if (buttonElement) {
                     buttonElement.innerHTML = originalButtonContent;
@@ -507,8 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } catch (error) {
-            alert(`获取 "${word}" 音频时发生 JavaScript 错误: ${error.message}`);
-            console.error('JS Error in playWordAudio:', error);
+            console.error(`JS Error in playWordAudio for "${word}":`, error);
             if (buttonElement) {
                 buttonElement.innerHTML = originalButtonContent;
                 buttonElement.disabled = false;
@@ -523,7 +747,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const tranlate_to = languageSelect.value;
 
             if (!tranlate_src.trim()) {
-                alert('请输入想要翻译和拆解的内容！');
+                showNotificationModal('请输入想要翻译和拆解的内容！', '提示');
+                return;
+            }
+
+            if (saveToDB && !currentUser) {
+                showNotificationModal('请先登录后再保存到生词本。', '提示');
                 return;
             }
 
@@ -532,9 +761,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const requestBody = {
                 workflow_id: cozeWorkflowId,
                 parameters: {
-                    tranlate_src: tranlate_src,
-                    saveToDB: String(saveToDB), // API expects string for boolean
-                    tranlate_to: tranlate_to
+                    tranlate_src,
+                    saveToDB: String(saveToDB),
+                    tranlate_to,
+                    input_id: currentUser ? currentUser.username : null
                 }
             };
 
@@ -544,7 +774,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Authorization': `Bearer ${cozeApiKey}`,
                         'Content-Type': 'application/json',
-                        'Accept': '*/*' // Often helpful for APIs
+                        'Accept': '*/*'
                     },
                     body: JSON.stringify(requestBody)
                 });
@@ -553,7 +783,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.code === 0 && result.data) {
                     try {
-                        // API's data field is a JSON string, so parse it
                         const workflowOutput = JSON.parse(result.data);
                         const outputc = workflowOutput.outputc || '';
                         const outpute = workflowOutput.outpute || '';
@@ -573,7 +802,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (typeof marked !== 'undefined') {
                             markdownDisplay.innerHTML = marked.parse(markdownText.trim());
                         } else {
-                            console.warn('Marked.js library not found. Displaying raw Markdown. Please add Marked.js to index.html (e.g., <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>).');
+                            console.warn('Marked.js library not found. Displaying raw Markdown.');
                             markdownDisplay.textContent = markdownText.trim();
                         }
 
@@ -730,9 +959,76 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!saveToVocabCheckbox) console.error('- Save to vocab checkbox (.save-to-vocab input[type="checkbox"]) not found.');
         if (!languageSelect) console.error('- Language select (.language-select select) not found.');
         if (!markdownDisplay) console.error('- Markdown display area (#markdown-display) not found.');
-        alert('页面初始化错误，部分功能可能无法使用。请检查控制台获取详细信息。');
+        showNotificationModal('页面初始化错误，部分功能可能无法使用。请检查控制台获取详细信息。', '初始化错误');
     }
 
     // Initialize to translate view
     switchToView('translate'); 
+
+    // 初始化时检查用户会话
+    checkUserSession();
+
+    // --- Custom Confirmation Modal (替代 confirm()) ---
+    const confirmationModal = document.getElementById('confirmation-modal'); // 需要在HTML中定义
+    const confirmationMessage = document.getElementById('confirmation-message');
+    const confirmYesButton = document.getElementById('confirm-yes-button');
+    const confirmNoButton = document.getElementById('confirm-no-button');
+    let confirmCallback = null;
+
+    function showConfirmationModal(message, callback) {
+        // 首先，确保HTML中有对应的模态框结构，类似于 notification-modal
+        // <div id="confirmation-modal" class="modal" style="display: none;">
+        //     <div class="modal-content">
+        //         <div class="modal-body" id="confirmation-message" style="padding: 20px; text-align: center;"></div>
+        //         <div class="modal-footer" style="display: flex; justify-content: space-around; padding: 10px 20px;">
+        //             <button id="confirm-yes-button" class="submit-button">是</button>
+        //             <button id="confirm-no-button" class="theme-toggle-button">否</button>
+        //         </div>
+        //     </div>
+        // </div>
+        // 对于这个示例，我将直接使用 showNotificationModal 并调整其行为，
+        // 或者您需要添加上述HTML并取消注释以下代码：
+
+        /*
+        if (confirmationModal && confirmationMessage && confirmYesButton && confirmNoButton) {
+            confirmationMessage.textContent = message;
+            confirmCallback = callback;
+            confirmationModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Fallback to window.confirm if modal elements aren't setup
+            if (window.confirm(message)) {
+                callback();
+            }
+        }
+        */
+       // 简化：暂时用两个通知模拟，或者后续再实现真正的confirm modal
+       if (window.confirm(message)) { // 暂时保留 window.confirm
+           callback();
+       }
+    }
+
+    /*
+    if (confirmYesButton) {
+        confirmYesButton.addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            hideConfirmationModal();
+        });
+    }
+
+    if (confirmNoButton) {
+        confirmNoButton.addEventListener('click', () => {
+            hideConfirmationModal();
+        });
+    }
+
+    function hideConfirmationModal() {
+        if (confirmationModal) {
+            confirmationModal.style.display = 'none';
+            document.body.style.overflow = '';
+            confirmCallback = null;
+        }
+    }
+    */
+    // --- End Custom Confirmation Modal ---
 });

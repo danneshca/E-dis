@@ -25,6 +25,15 @@
                         </svg>已在 GitHub 上开源
                     </a>
                 </div>
+                <div class="user-section">
+                    <div id="user-info" style="display: none;">
+                        <span id="username-display"></span>
+                        <button id="logout-button" class="theme-toggle-button">退出登录</button>
+                    </div>
+                    <div id="login-section">
+                        <button id="login-button" class="theme-toggle-button">登录/注册</button>
+                    </div>
+                </div>
                 <button class="theme-toggle-button" id="theme-toggle">切换主题</button>
             </div>
         </aside>
@@ -66,5 +75,52 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
+
+    <!-- 登录/注册对话框 -->
+    <div id="auth-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="auth-title">登录</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">登录</button>
+                    <button class="auth-tab" data-tab="register">注册</button>
+                </div>
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <div class="form-group" id="confirm-password-group" style="display: none;">
+                        <label for="confirm-password">确认密码</label>
+                        <input type="password" id="confirm-password">
+                    </div>
+                    <button type="submit" class="submit-button">提交</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="notification-modal" class="modal" style="display: none;">
+        <div class="modal-content notification-modal-content">
+            <div class="modal-header notification-modal-header">
+                <h2 id="notification-title">提示</h2>
+                <span class="close-button" id="notification-close-button">&times;</span>
+            </div>
+            <div class="modal-body notification-modal-body">
+                <p id="notification-message"></p>
+            </div>
+            <div class="modal-footer notification-modal-footer">
+                <button id="notification-ok-button" class="submit-button">确定</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 

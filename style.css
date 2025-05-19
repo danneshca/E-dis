@@ -48,20 +48,49 @@ html {
     --accent-colorful: #E67E22;             /* Carrot Orange - Secondary Accent */
     --text-color-colorful: #512E5F;         /* Dark Purple - Main Text */
     --text-color-colorful-light: #7D3C98;   /* Medium Purple - Lighter Text */
-    --border-color-colorful: #D2B4DE;       /* Pale Lilac - Borders */
+    --border-color-colorful-original: #D2B4DE; /* Pale Lilac - Original Borders */
     --input-bg-colorful: #FBEEE6;           /* Floral White - Input Background */
-    --placeholder-color-colorful: #A569BD;   /* Medium Purple - Placeholders */
+    --placeholder-color-colorful-original: #A569BD; /* Medium Purple - Original Placeholders */
     --switch-bg-colorful: #EBDEF0;           /* Light Lilac - Switch Off State */
     --vocab-button-bg-colorful: #E8DAEF;     /* Pale Purple - Vocab Buttons */
     --box-shadow-soft-colorful: 0 8px 30px rgba(81, 46, 95, 0.12); 
     --box-shadow-interactive-colorful: 0 4px 12px rgba(142, 68, 173, 0.2); 
 
-    /* Colorful Theme - Gradients */
+    /* Colorful Theme - Gradients & NEW Solid Card BG */
     --light-bg-colorful-gradient: linear-gradient(135deg, #FEF9E7 0%, #FFF0E0 100%);
     --sidebar-bg-colorful-gradient: linear-gradient(180deg, #F6EEF9 0%, #E8DAEF 100%);
-    --card-bg-colorful-gradient: linear-gradient(to bottom, #FFFFFF 0%, #FAF7FB 100%);
+    /* --card-bg-colorful-gradient: linear-gradient(to bottom, #FFFFFF 0%, #FAF7FB 100%); /* OLD Light Gradient */
+    --card-bg-colorful-solid: #FBF9FF; /* NEW: Very light purplish-white solid BG for cards/modals */
     --button-primary-colorful-gradient: linear-gradient(45deg, var(--primary-colorful-light) 0%, var(--primary-colorful) 100%);
     --button-primary-colorful-gradient-hover: linear-gradient(45deg, var(--primary-colorful) 0%, var(--primary-colorful-dark) 100%);
+
+    /* ---- PinkBlue Theme Colors (NEW - based on image, slightly bluer, higher contrast text) ---- */
+    --pb-pastel-pink: #FADADD; 
+    --pb-pastel-blue: #D2E6F6; 
+    --pb-lavender-blend: #EAE4F2; 
+
+    --primary-pinkblue: #E5A9B4; 
+    --primary-pinkblue-dark: #D88596; 
+    
+    --text-color-pinkblue: #3D3D3D; /* OLD: #4A4A4A (Dark Grey) NEW: Darker Grey for better contrast */
+    --text-color-pinkblue-light: #6A6A6A; /* OLD: #777777 (Medium Grey) NEW: Darker Medium Grey */
+    
+    --border-color-pinkblue: #D1C4E9; 
+    --input-bg-pinkblue: #FDF6F7; 
+    --placeholder-color-pinkblue: #9B9B9B; /* OLD: #A0A0A0 NEW: Slightly darker placeholder */
+    --switch-bg-pinkblue: #E1DDEF; 
+    --vocab-button-bg-pinkblue: #EBF3FF; 
+
+    --box-shadow-soft-pinkblue: 0 6px 20px rgba(120, 100, 150, 0.1);
+    --box-shadow-interactive-pinkblue: 0 4px 10px rgba(229, 169, 180, 0.25);
+
+    /* PinkBlue Theme - Gradients & Solid Backgrounds (NEW) */
+    --light-bg-pinkblue-gradient: linear-gradient(135deg, var(--pb-pastel-pink) 0%, var(--pb-pastel-blue) 100%);
+    --sidebar-bg-pinkblue-gradient: linear-gradient(180deg, #FEFBFB 0%, #F8FBFF 100%); /* OLD BLUE END: #FBFBFF; NEW: #F8FBFF (a touch more blue to the almost-white) */
+    --card-bg-pinkblue-solid: #FCFAFF; /* Very Light Lavender White for cards/modals */
+    --button-pb-blue-to-pink-main: linear-gradient(45deg, var(--pb-pastel-blue) 0%, var(--pb-pastel-pink) 100%);
+    --button-pb-blue-to-pink-hover: linear-gradient(45deg, #C1DFF0 0%, #F8CDD7 100%); /* Slightly more saturated/deeper pastel blue to pastel pink */
+    /* ---- End PinkBlue Theme Colors ---- */
 
     /* Fallback to light theme variables first */
     --app-light-bg: var(--light-bg-light);
@@ -102,13 +131,13 @@ html[data-theme='dark'] {
 
 html[data-theme='colorful'] {
     --app-light-bg: var(--light-bg-colorful-gradient);
-    --app-card-bg: var(--card-bg-colorful-gradient);
+    --app-card-bg: var(--card-bg-colorful-solid); /* USE NEW SOLID CARD/MODAL BG */
     --app-sidebar-bg: var(--sidebar-bg-colorful-gradient);
-    --app-text-color: var(--text-color-colorful);
-    --app-text-color-light: var(--text-color-colorful-light);
-    --app-border-color: var(--border-color-colorful);
-    --app-input-bg: var(--input-bg-colorful); 
-    --app-placeholder-color: var(--placeholder-color-colorful);
+    --app-text-color: var(--text-color-colorful); /* #512E5F - should be good on new card bg */
+    --app-text-color-light: var(--text-color-colorful-light);  /* #7D3C98 */
+    --app-border-color: #B084CC; /* Darkened border color from previous attempt, KEEP THIS */
+    --app-input-bg: var(--input-bg-colorful); /* #FBEEE6 - Floral white for inputs */
+    --app-placeholder-color: var(--text-color-colorful-light); /* #7D3C98 - Using a darker purple for placeholder */
     --app-switch-bg: var(--switch-bg-colorful);
     --app-vocab-button-bg: var(--vocab-button-bg-colorful);
     --app-box-shadow-soft: var(--box-shadow-soft-colorful);
@@ -117,6 +146,30 @@ html[data-theme='colorful'] {
     --app-primary-color-dark: var(--primary-colorful-dark);
     --app-primary-bg-action: var(--button-primary-colorful-gradient);
     --app-primary-bg-action-hover: var(--button-primary-colorful-gradient-hover);
+
+    /* Remove specific modal header/footer BG vars, as --app-card-bg now covers the whole modal solid */
+}
+
+html[data-theme='pinkblue'] {
+    --app-light-bg: var(--light-bg-pinkblue-gradient);
+    --app-card-bg: var(--card-bg-pinkblue-solid);
+    --app-sidebar-bg: var(--sidebar-bg-pinkblue-gradient);
+    --app-text-color: var(--text-color-pinkblue);
+    --app-text-color-light: var(--text-color-pinkblue-light);
+    --app-border-color: var(--border-color-pinkblue);
+    --app-input-bg: var(--input-bg-pinkblue);
+    --app-placeholder-color: var(--placeholder-color-pinkblue);
+    --app-switch-bg: var(--switch-bg-pinkblue);
+    --app-vocab-button-bg: var(--vocab-button-bg-pinkblue); /* Note: This is for solid bg, gradient buttons will use --app-primary-bg-action */
+    --app-box-shadow-soft: var(--box-shadow-soft-pinkblue);
+    --app-box-shadow-interactive: var(--box-shadow-interactive-pinkblue);
+    
+    --app-primary-color: var(--primary-pinkblue); /* Fallback/text color for primary elements */
+    --app-primary-color-dark: var(--primary-pinkblue-dark);
+    
+    /* USE THE NEW BLUE-TO-PINK GRADIENTS FOR BUTTONS */
+    --app-primary-bg-action: var(--button-pb-blue-to-pink-main);
+    --app-primary-bg-action-hover: var(--button-pb-blue-to-pink-hover);
 }
 
 body {
@@ -838,4 +891,326 @@ html[data-theme='colorful'] .language-select select {
 .main-content, .output-sidebar, .markdown-output, .markdown-output pre {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: var(--app-border-color) var(--app-sidebar-bg); /* Firefox */
+}
+
+/* 用户相关样式 */
+.user-section {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#username-display {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--app-text-color);
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--app-card-bg);
+    margin: 15% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    border-radius: var(--border-radius-main);
+    box-shadow: var(--app-box-shadow-soft);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--app-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--app-text-color);
+    font-size: 1.5rem;
+}
+
+.close-button {
+    color: var(--app-text-color-light);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover {
+    color: var(--app-text-color);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* 认证表单样式 */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--app-border-color);
+}
+
+.auth-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: var(--app-text-color-light);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.auth-tab.active {
+    color: var(--app-primary-color);
+    border-bottom: 2px solid var(--app-primary-color);
+}
+
+.auth-tab:hover:not(.active) {
+    color: var(--app-text-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--app-text-color);
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--app-border-color);
+    border-radius: var(--border-radius-interactive);
+    background-color: var(--app-input-bg);
+    color: var(--app-text-color);
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--app-primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--app-primary-color), 0.3);
+}
+
+#auth-form .submit-button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 10% auto;
+        width: 95%;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .auth-tab {
+        padding: 8px 15px;
+    }
+}
+
+/* Notification Modal Specific Styles */
+.notification-modal-content {
+    max-width: 400px; /* Smaller width for notifications */
+}
+
+.notification-modal-header h2 {
+    font-size: 1.3rem; /* Slightly smaller title */
+}
+
+.notification-modal-body {
+    padding-top: 15px;
+    padding-bottom: 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--app-text-color);
+    word-wrap: break-word; /* Ensure long messages wrap */
+}
+
+.notification-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--app-border-color);
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+}
+
+#notification-ok-button {
+    min-width: 80px;
+    padding: 10px 20px; /* Adjust padding */
+}
+
+/* Ensure new modal uses existing modal display logic */
+#notification-modal {
+    /* display: none; already inline, but good for clarity */
+    /* position: fixed; ... inherits from .modal */
+    /* ... other styles like background are inherited from .modal */
+}
+
+/* Ensure close button is styled like the auth modal's close button */
+#notification-modal .close-button {
+    /* Styles inherited from .close-button */
+}
+
+/* Focus style for OK button */
+#notification-ok-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--app-card-bg), 0 0 0 4px var(--app-primary-color);
+}
+
+/* Adjust colorful mode auth tabs for better visibility */
+html[data-theme='colorful'] .auth-tab {
+    color: #6A287E; /* Darker purple for non-active tabs, KEEP THIS */
+}
+/* Active tab color is already set by .auth-tab.active */
+
+/* Remove specific modal header/footer overrides from previous turn as --app-card-bg handles it */
+/* html[data-theme='colorful'] .modal-header { ... } */
+/* html[data-theme='colorful'] .modal-footer { ... } */
+
+/* Ensure text colors within colorful modals are correctly applied using main text color */
+html[data-theme='colorful'] .form-group label,
+html[data-theme='colorful'] .modal-header h2,
+html[data-theme='colorful'] .notification-modal-body p {
+    color: var(--app-text-color); /* This is #512E5F, should be good */
+}
+
+/* Ensure close button in colorful modals is clear */
+html[data-theme='colorful'] .modal-header .close-button {
+    color: var(--app-text-color); /* #512E5F */
+}
+html[data-theme='colorful'] .modal-header .close-button:hover {
+    color: var(--primary-colorful-dark); /* #7D3C98 */
+}
+
+/* Textarea focus for colorful theme - ensure border is visible */
+html[data-theme='colorful'] .dialog-box textarea:focus,
+html[data-theme='colorful'] .quiz-sentence-textarea:focus,
+html[data-theme='colorful'] .language-select select:focus,
+html[data-theme='colorful'] .form-group input:focus {
+     box-shadow: 0 0 0 3px var(--app-card-bg), 0 0 0 4px var(--app-primary-color); /* Ensure primary color in shadow is visible */
+     /* Consider adding: border-color: var(--app-primary-color); if not already effective */
+}
+
+/* Specific adjustments for pinkblue theme if needed, e.g., focus rings */
+html[data-theme='pinkblue'] .dialog-box textarea:focus,
+html[data-theme='pinkblue'] .quiz-sentence-textarea:focus,
+html[data-theme='pinkblue'] .language-select select:focus,
+html[data-theme='pinkblue'] .form-group input:focus {
+     box-shadow: 0 0 0 3px var(--app-card-bg), 0 0 0 4px var(--app-primary-color); 
+}
+
+/* Ensure select dropdown arrow matches the theme */
+html[data-theme='pinkblue'] .language-select select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%233D3D3D' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E"); /* Using NEW darker text-color-pinkblue */
+}
+
+/* Ensure inline code color is distinct in pinkblue theme */
+html[data-theme='pinkblue'] .markdown-output code {
+    background-color: var(--app-input-bg); /* Very Light Pink */
+    color: var(--primary-pinkblue); /* Soft Pink for code text */
+}
+html[data-theme='pinkblue'] .markdown-output pre code {
+    background-color: transparent;
+    color: inherit;
+}
+
+/* Ensure auth tabs have good contrast */
+html[data-theme='pinkblue'] .auth-tab {
+    color: var(--text-color-pinkblue-light);
+}
+html[data-theme='pinkblue'] .auth-tab.active {
+    color: var(--primary-pinkblue);
+    border-bottom: 2px solid var(--primary-pinkblue);
+}
+
+/* Add text shadow for better contrast on gradient buttons in pinkblue theme */
+html[data-theme='pinkblue'] .sidebar nav ul li.active a,
+html[data-theme='pinkblue'] .sidebar nav ul li a:hover {
+    text-shadow: 1px 1px 2px rgba(61, 61, 61, 0.3); /* Using #3D3D3D with alpha */
+}
+
+html[data-theme='pinkblue'] .submit-button {
+    text-shadow: 1px 1px 2px rgba(61, 61, 61, 0.3);
+}
+
+/* Make buttons gradient in pinkblue theme */
+html[data-theme='pinkblue'] .theme-toggle-button,
+html[data-theme='pinkblue'] .vocab-button,
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.keep-vocab-button,
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.remove-after-quiz-button {
+    background: var(--app-primary-bg-action);
+    color: white; 
+    border: none; 
+    text-shadow: 1px 1px 2px rgba(61, 61, 61, 0.3); /* Added text shadow */
+}
+
+/* Hover states for these gradient buttons */
+html[data-theme='pinkblue'] .theme-toggle-button:hover,
+html[data-theme='pinkblue'] .vocab-button:not(.delete-button):hover, 
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.keep-vocab-button:hover,
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.remove-after-quiz-button:not(.delete-button):hover {
+    background: var(--app-primary-bg-action-hover);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(61, 61, 61, 0.3); /* Added text shadow */
+}
+
+/* Ensure delete button hover remains red and specific - no text shadow needed here as bg is dark */
+html[data-theme='pinkblue'] .vocab-button.delete-button:hover {
+    background: #E53935 !important; 
+    color: white !important;
+    text-shadow: none; /* Explicitly remove text shadow if inherited */
+}
+
+/* Adjust padding for quiz result buttons if border removal affects size */
+/* These buttons already have specific padding, this ensures it's applied in this context too if needed */
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.keep-vocab-button,
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.remove-after-quiz-button {
+    padding: 10px 20px; /* Ensure padding is maintained */
+}
+
+/* Reset transform for quiz result buttons on hover if general .vocab-button:hover transform is not desired */
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.keep-vocab-button:hover,
+html[data-theme='pinkblue'] .quiz-result-controls .vocab-button.remove-after-quiz-button:not(.delete-button):hover {
+    transform: translateY(-1px); /* Consistent with other button hovers like .theme-toggle-button:hover if needed*/
 } 
