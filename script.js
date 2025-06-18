@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Coze API Details
     const cozeWorkflowId = '7505413450131554319';
-    const cozeApiKey = 'pat_gv1a0cZTzmSO955tmZCgQNn47mHm49QekjeNiXxTkivxicJC5kN2c8n57dwjNOFe';
+    const cozeApiKey = 'pat_5igwYkWxCIPOGIxNiOJEC2y4ek0BtDoAB3RQFjcfhhTfBCc7SvG25WLoS1dOi3fB';
     const cozeApiUrl = 'https://api.coze.cn/v1/workflow/run';
 
     // New Coze Workflow IDs for Vocabulary
